@@ -4,23 +4,22 @@ phases:
   pre_build:
     commands:
        - echo Logging / auth in to Amazon ECR
-       - ### aws ecr get-login-password 
+       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 621343465286.dkr.ecr.ap-south-1.amazonaws.com
 
   build:
     commands:
       - echo Build started
       - echo Building the docker image
-      - docker build -t yt-video-image .
-      - ### docker tag 
-
+      - docker build -t ecs-fargate .
+      - docker tag ecs-fargate:latest 621343465286.dkr.ecr.ap-south-1.amazonaws.com/ecs-fargate:latest
 
   post_build:
     commands:
      - echo build completed
      - echo pushing in to docker ECR...
-     - docker push ### 
+     - docker push 621343465286.dkr.ecr.ap-south-1.amazonaws.com/ecs-fargate:latest
      - echo Writing image definition file..
-     - printf '[{"name":"%s","imageUri":"%s"}]' "" "" > imagedefinitions.json
+     - printf '[{"name":"%s","imageUri":"%s"}]' "ecs-fargate" "621343465286.dkr.ecr.ap-south-1.amazonaws.com/ecs-fargate" > imagedefinitions.json
 
 
 artifacts:
